@@ -1,4 +1,4 @@
-import pdfplumber
+from pypdf import PdfReader
 import re
 
 SECTION_HEADERS = {
@@ -13,13 +13,14 @@ VALUE_PATTERN = re.compile(r"\$?\d+(?:\.\d+)?\s?(million|billion|mn|bn|crore|lak
 
 
 def pdf_to_text(file):
+    reader = PdfReader(file)
     text = ""
-    with pdfplumber.open(file) as pdf:
-        for page in pdf.pages:
-            page_text = page.extract_text()
-            if page_text:
-                text += page_text + "\n"
+    for page in reader.pages:
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text + "\n"
     return text
+
 
 
 def detect_sections(text):
